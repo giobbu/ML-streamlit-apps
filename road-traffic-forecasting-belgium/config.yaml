@@ -1,0 +1,26 @@
+data:
+  testing: 336
+  threshold: 10
+  time_feature: 4
+  validation: 336
+loader:
+  aux_dim: 4
+  batch_tr: 32
+  batch_ts: 1
+  input_sqc: 12
+  output_sqc: 12
+  tot_dim: 2297
+  total_sqc: 24
+model:
+  dropout: 0.1
+  hidd_dim: 50
+  krnl_reg: 0.001
+  nb_epochs: 10
+  rcr_init: glorot_uniform
+script_path: data/Flow_BEL_street_30min.csv
+seed: 31415
+tr_phs:
+  min_delta: 5.0e-05
+  patience: 10
+ts_ph:
+  update: 2
