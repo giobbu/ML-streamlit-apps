@@ -30,7 +30,7 @@ docker pull giobbu/streets-graph
 ## Run Streamlit App Container
 To interact with the App type:
 ```{r}
-docker run -p 8501:8501 --rm giobbu/deap_traff_app
+docker run -p 8501:8501 --rm giobbu/streets-graph
 ```
 view your Streamlit app in your browser
 ```{r}
