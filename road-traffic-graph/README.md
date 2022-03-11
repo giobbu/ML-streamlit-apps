@@ -18,7 +18,10 @@ docker build -t name-image .
 
 Check the image created:
 ```{r}
-docker image list
+ML-streamlit-apps/road-traffic-graph >>> docker image ls
+
+REPOSITORY             TAG       IMAGE ID       CREATED          SIZE
+giobbu/streets-graph   latest    a22bc4da76b4   26 minutes ago   2.97GB
 ```
 
 ## Pull Image from Docker Hub
