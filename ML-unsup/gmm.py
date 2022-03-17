@@ -48,6 +48,10 @@ X_train = np.vstack(list_gaussian)
 clf = mixture.GaussianMixture(n_components = gmm_components, covariance_type = "full", max_iter = ITER)
 clf.fit(X_train)
 
+BIC = clf.bic(X_train)
+AIC = clf.aic(X_train)
+st.write(f"BIC :  {BIC:.2f}          AIC: {AIC:.2f}")
+
 
 # display predicted scores by the model as a contour plot
 x = np.linspace(-50.0, 50.0)
@@ -62,7 +66,6 @@ Z = Z.reshape(X.shape)
 fig, ax = plt.subplots(figsize=(15, 10))
 
 CS = plt.contour( X, Y, Z, norm = LogNorm( vmin = 1.0, vmax = 500.0 ), levels = np.logspace(0, 3, 100)) # 
-
 
 # plot samples
 plt.scatter( X_train[:, 0], X_train[:, 1], 0.8)
@@ -84,6 +87,8 @@ for comp in range(gmm_components):
 plt.title("Negative log-likelihood predicted by a GMM")
 plt.axis("tight")
 plt.show()
+
+
 
 st.pyplot(plt)
 
