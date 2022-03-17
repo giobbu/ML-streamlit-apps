@@ -7,7 +7,6 @@ import random
 import streamlit as st
 from scipy.stats import multivariate_normal
 
-
 @st.cache
 def generate_random_number():
     return random.randint(1,1000)
@@ -16,30 +15,32 @@ def generate_random_number():
 st.title('Gaussian Mixture Model')
 
 seed = generate_random_number()
-st.write('SEED: ' + str(seed))
+st.subheader('SEED: ' + str(seed))
 # generate random sample, two components
 np.random.seed(seed)
 random.seed(seed)
 
 n_samples = st.selectbox( 'NUMBER SAMPLES', (100, 500, 1000))
-gmm_components = st.selectbox( 'GMM NUMBER COMPONENTS', (2, 5, 10))
+gmm_components = st.selectbox( 'GMM COMPONENTS NUMBER', (2, 3, 4, 5))
 ITER = st.selectbox( 'MAX ITER', (10, 20, 50, 100))
 
-n = 5 # HIDDEN NUMBER
+n = random.randint(2, 5)
 interval = random.randint(1, 3)
 
 
 list_gaussian = []
 
-for i in range(1, n):
+for i in range(0, n):
+
+    print(i)
 
     C = np.array([[random.uniform(-interval, interval), random.uniform(-interval, interval)], [random.uniform(-interval, interval), random.uniform(-interval, interval)]])
 
     centre = random.randint(0, 10)
      
-    stretched_gaussian = np.dot(np.random.randn(n_samples, 2) + np.array([centre, centre]) , C)
+    gaussian = np.dot(np.random.randn(n_samples, 2) + np.array([centre, centre]) , C)
 
-    list_gaussian.append(stretched_gaussian)
+    list_gaussian.append(gaussian)
 
 X_train = np.vstack(list_gaussian)
 
@@ -50,7 +51,6 @@ clf.fit(X_train)
 
 BIC = clf.bic(X_train)
 AIC = clf.aic(X_train)
-st.write(f"BIC :  {BIC:.2f}          AIC: {AIC:.2f}")
 
 
 # display predicted scores by the model as a contour plot
@@ -84,11 +84,14 @@ for comp in range(gmm_components):
 
     plt.scatter( mu[0], mu[1], color = "darkorange")
 
-plt.title("Negative log-likelihood predicted by a GMM")
+plt.title("Negative log-likelihood predicted by a GMM", fontsize=20)
+plt.suptitle(f"BIC :  {BIC:.2f}          AIC: {AIC:.2f}", fontsize=20)
 plt.axis("tight")
 plt.show()
-
-
-
 st.pyplot(plt)
+
+st.header(' Discover the true number of Gaussian distributions generating the data ')
+if st.checkbox('Click me'):
+    st.subheader(f"! {n}")
+
 
