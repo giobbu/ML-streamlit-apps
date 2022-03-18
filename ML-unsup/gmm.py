@@ -79,8 +79,8 @@ Z = - clf.score_samples(XX)
 Z = Z.reshape(X.shape)
 
 
-
-CS = plt.contour( X, Y, Z, norm = LogNorm( vmin = 1.0, vmax = 500.0 ), levels = np.logspace(0, 3, 100)) # 
+if st.checkbox('Equi-probability surfaces'):
+    CS = plt.contour( X, Y, Z, norm = LogNorm( vmin = 1.0, vmax = 500.0 ), levels = np.logspace(0, 5, 100)) # 
 
 
 
@@ -94,7 +94,7 @@ for comp in range(GMM_COMP):
 
     neg_log = - rv.logpdf(pos)
 
-    plt.contour(x, y, neg_log , norm = LogNorm( vmin = 1.0, vmax = 100.0 ), levels = np.logspace(0, 5, 10), cmap='RdGy')
+    plt.contour(x, y, neg_log , norm = LogNorm( vmin = 1.0, vmax = 100.0 ), levels = np.logspace(0, 2, 10), cmap='RdGy')
 
     plt.scatter( mu[0], mu[1], color = "darkorange")
 
@@ -104,7 +104,7 @@ plt.show()
 st.pyplot(plt)
 
 st.markdown("---")
-st.header(' Discover what the number is ')
+st.header(' Discover what the true number is ')
 if st.checkbox('Click me'):
     
     st.subheader(f'The number of Gaussina distributions generating the data: - {n} -')
