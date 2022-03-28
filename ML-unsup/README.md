@@ -6,7 +6,7 @@ We wish to model the data by a joint distribution <img src="https://render.githu
 
 ### Hierarchy of steps
 
-* <img src="https://render.githubusercontent.com/render/math?math= z(i) \texttildelow Multinomial(\phi) ">
+* <img src="https://render.githubusercontent.com/render/math?math=z(i) \texttildelow Multinomial(\phi) ">
 
 
 
