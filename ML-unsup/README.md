@@ -6,7 +6,8 @@ We wish to model the data by a joint distribution <img src="https://render.githu
 
 ### Hierarchy of steps
 
-* <img src="https://render.githubusercontent.com/render/math?math=z(i) \sim Multinomial(\phi) ">
+* <img src="https://render.githubusercontent.com/render/math?math=z(i) \sim Multinomial(\phi) ">, where the parameter
+<img src="https://render.githubusercontent.com/render/math?math=\phi_j \geq 0 ">
 * <img src="https://render.githubusercontent.com/render/math?math=x(i) \mid z(i)=j \sim \mathcal{N}(\mu_j,\sigma_j) ">
 
 
