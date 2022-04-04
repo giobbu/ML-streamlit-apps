@@ -29,8 +29,15 @@ class G_fromOSM:
     def retrieve(self):
         
         if  self.drive == 'none':
-            
-            G = ox.graph_from_place(self.area, network_type = self.drive, custom_filter = self.query)
+
+            if self.area == 'Namur, Belgium' or self.area == 'Mechelen, Belgium':
+                
+                G = ox.graph_from_place(self.area, network_type = self.drive, custom_filter = self.query, which_result = 2)
+
+            else:
+
+                G = ox.graph_from_place(self.area, network_type = self.drive, custom_filter = self.query) 
+
             
         else:
             
@@ -69,7 +76,7 @@ class G_fromOSM:
         
     def viz_save_toFolium(self, G, name, edge_width ):
         
-        m1 = ox.plot_graph_folium(G, popup_attribute='name', edge_color='blue', 
+        m1 = ox.plot_graph_folium(G, popup_attribute= None, edge_color='blue', 
                                   edge_width= edge_width, edge_opacity=50)
 
         filepath = name + '_vis_folium.html'

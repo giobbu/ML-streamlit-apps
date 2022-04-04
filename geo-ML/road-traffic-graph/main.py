@@ -29,7 +29,7 @@ def _setup_parser():
     
     parser.add_argument('-d', type=str, default = 'none', help='Options: "drive" or "none". If "none" is selected then insert argument "-r".')
 
-    parser.add_argument('-r', type=str, default = '["highway"~"primary|primary_link|secondary|seondary_link"]', help = 'Insert Overpass query (default is  "["highway"~"motorway"]" ). Further information on https://stackoverflow.com/questions/61881345/how-to-import-multiple-infrastructure-type-in-osmnx/61897000#61897000')
+    parser.add_argument('-r', type=str, default = '["highway"~"motorway|primary"]', help = 'Insert Overpass query (default is  "["highway"~"motorway"]" ). Further information on https://stackoverflow.com/questions/61881345/how-to-import-multiple-infrastructure-type-in-osmnx/61897000#61897000')
     
     parser.add_argument('-b',  type=float, default = 4.5, help = 'Road width. Default vale is 4.5 meters')
 
@@ -37,7 +37,6 @@ def _setup_parser():
 
     return parser
 
-#highway"~"motorway|motorway_link|
 
 
 def main():
@@ -101,6 +100,8 @@ def main():
         g = G_fromOSM(area, drive, road, buffer)
 
         G = g.retrieve()
+
+        print(G)
 
         intersections, streets = g.deconstruct(G)
 
