@@ -2,7 +2,7 @@ import os
 import sys
 import argparse
 from turtle import width
-from _OSMNX_GCN_ import G_fromOSM, G_forGCN
+from gcn_streets_graph import GraphOsm, GraphGCN
 import networkx as nx
 import warnings
 warnings.filterwarnings("ignore")
@@ -89,7 +89,7 @@ def main():
         st.header("Retrieve streets from OSM")
 
         code = '''# 
-        g = G_fromOSM(area, drive, road, buffer)
+        g = GraphOsm(area, drive, road, buffer)
         G = g.retrieve()
         intersections, streets = g.deconstruct(G)'''
         
@@ -97,7 +97,7 @@ def main():
 
         st.session_state.count = 1
         
-        g = G_fromOSM(area, drive, road, buffer)
+        g = GraphOsm(area, drive, road, buffer)
 
         G = g.retrieve()
 
@@ -112,7 +112,7 @@ def main():
         st.header("Visualize street network on OSMNX")
 
         code = '''# 
-        fig = g.viz_save_toJPEG(G, [ AREA SELECTED ], node_size = 10,  edge_width = 0.5)
+        fig = g.vis_save_plot(G, [ AREA SELECTED ], node_size = 10,  edge_width = 0.5)
         st.pyplot(fig) '''
         
         st.code(code, language='python')
@@ -124,7 +124,7 @@ def main():
         if not isExist:
             os.makedirs(PATH_)
 
-        fig = g.viz_save_toPNG(G, PATH_ + 'streets_' + area_string, node_size = 10,  edge_width = 0.5)
+        fig = g.vis_save_plot(G, PATH_ + 'streets_' + area_string, node_size = 10,  edge_width = 0.5)
             
         st.pyplot(fig)
 
@@ -133,7 +133,7 @@ def main():
         st.header("Visualize street network on Folium")
 
         code = '''# 
-        g.viz_save_toFolium(G, PATH_ + area_string, edge_width = 0.5)
+        g.vis_save_folium(G, PATH_ + area_string, edge_width = 0.5)
         '''
 
         st.code(code, language='python')
@@ -145,9 +145,7 @@ def main():
         if not isExist:
             os.makedirs(PATH_)
 
-        m = g.viz_save_toFolium(G, PATH_ + area_string, edge_width = 0.5)
-
-        
+        m = g.vis_save_folium(G, PATH_ + area_string, edge_width = 0.5)
 
 #----------------------------------------------------------
 
@@ -159,8 +157,7 @@ def main():
             os.makedirs(PATH_)
 
         # save to json format
-        g.save_toGeoJSON(G, PATH_ + area_string)
-
+        g.save_geojson(G, PATH_ + area_string)
 
         # make pickle directory
         PATH_ = PATH_CITY + PATH_PCKL
@@ -170,11 +167,10 @@ def main():
             os.makedirs(PATH_)
 
         # save to pickle format
-        g.save_toPickle(G, intersections, streets, PATH_ + area_string)
+        g.save_pickle(G, intersections, streets, PATH_ + area_string)
 
 
 # ------------------------------------------------------------
-
 
     constr = st.button('CONSTRUCT GRAPH')
 
@@ -190,7 +186,7 @@ def main():
 
             streets = st.session_state.streets
         
-            g = G_forGCN(streets)
+            g = GraphGCN(streets)
 
             df_streets = g.prepare_streets_DF()
 

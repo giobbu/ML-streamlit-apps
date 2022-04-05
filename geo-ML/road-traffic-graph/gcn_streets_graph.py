@@ -13,44 +13,54 @@ from utils import build_df_graph, clean_name_street, visualize_attr_graph
 
 
 
-class G_fromOSM:
+class GraphOsm:
+
+    """ 
+
+    Retrieve road network from OpenStreetMap (OSM) and save it in different formats for later visualization.
+
+    """
     
     def __init__(self, area, drive, query, buffer):
+    # parameters to query OSM
         
-        self.area = area
+        self.area = area     # area of interest (e.g. Namur, Belgium) 
         
-        self.drive = drive
+        self.drive = drive   # typology of roads (e.g. drive)
         
-        self.query = query
+        self.query = query   # roads of interest (e.g. motorways)
         
-        self.buffer = buffer
+        self.buffer = buffer   # width of roads (e.g. 4.5 meters)
         
-        
+    
+     
     def retrieve(self):
+    # retrieve the streets with OSMnx module: 'ox.graph_from_place()'
         
         if  self.drive == 'none':
 
             if self.area == 'Namur, Belgium' or self.area == 'Mechelen, Belgium':
+                # querying Namur/Mechelen returns two results: point geometry and (multi)polygon
                 
                 G = ox.graph_from_place(self.area, network_type = self.drive, custom_filter = self.query, which_result = 2)
 
             else:
 
                 G = ox.graph_from_place(self.area, network_type = self.drive, custom_filter = self.query) 
-
-            
+   
         else:
             
             G = ox.graph_from_place(self.area, network_type = self.drive)
         
-        G = ox.project_graph(G, to_crs = 'epsg:4326')
+        
+        G = ox.project_graph(G, to_crs = 'epsg:4326') # set coordinate reference system
         
         return G
         
         
     def deconstruct(self, G):
         
-        intersections, streets = ox.graph_to_gdfs(G)
+        intersections, streets = ox.graph_to_gdfs(G) 
         
         print('Graph representation of road network:')
         print('')
@@ -62,7 +72,8 @@ class G_fromOSM:
         return intersections, streets
         
 
-    def viz_save_toPNG(self, G, name, node_size, edge_width ):
+    def vis_save_plot(self, G, name, node_size, edge_width):
+    # plot and save in png
         
         fig, ax = ox.plot_graph(G, bgcolor='k', node_size = node_size, 
                                 node_color='#999999', node_edgecolor='none', node_zorder=1,
@@ -74,7 +85,8 @@ class G_fromOSM:
 
         
         
-    def viz_save_toFolium(self, G, name, edge_width ):
+    def vis_save_folium(self, G, name, edge_width ):
+    # plot in folium and save in png
         
         m1 = ox.plot_graph_folium(G, popup_attribute= None, edge_color='blue', 
                                   edge_width= edge_width, edge_opacity=50)
@@ -83,22 +95,23 @@ class G_fromOSM:
         
         m1.save(filepath)
         
-        # display folium map
-
         return  folium_static(m1)
 
         
     
-    def save_toGeoJSON(self, G, name):
-        
-        ECKERT_IV_PROJ4_STRING = "+proj=eck4 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
-        
+    def save_geojson(self, G, name):
+    # save to GeoJSON
+
         edges = ox.graph_to_gdfs(G, nodes = False, edges = True)
         
+        # set new coordinate reference system in meters
+        ECKERT_IV_PROJ4_STRING = "+proj=eck4 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
         edges_meter = edges.to_crs(ECKERT_IV_PROJ4_STRING)
         
+        # buffer the geometry of the streets
         edges_meter = edges_meter.geometry.buffer(self.buffer) 
         
+        # reset the coordinate reference system back to the original
         edges_meter = edges_meter.to_crs({'init' :'epsg:4326'})
         
         streets_net = gpd.GeoDataFrame(edges_meter.geometry)
@@ -110,7 +123,7 @@ class G_fromOSM:
         streets_net.to_file(name + '.json', driver = 'GeoJSON')
         
     
-    def save_toPickle(self, G, intersections, streets, name):
+    def save_pickle(self, G, intersections, streets, name):
                 
         with open( str(name) + '.pkl', 'wb') as f:
             
@@ -118,7 +131,7 @@ class G_fromOSM:
 
 
 
-class G_forGCN:
+class GraphGCN:
     
     def __init__( self, streets ):
         
