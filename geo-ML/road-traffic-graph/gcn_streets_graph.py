@@ -8,7 +8,6 @@ import pickle
 import streamlit as st
 import matplotlib.pyplot as plt
 from streamlit_folium import folium_static
-
 from utils import build_df_graph, clean_name_street, visualize_attr_graph
 
 
@@ -28,8 +27,6 @@ class GraphOsm:
         self.query = query   # roads of interest (e.g. motorways)
         self.buffer = buffer   # width of roads (e.g. 4.5 meters)
         
-    
-     
     def retrieve(self):
     # retrieve the streets with OSMnx module: 'ox.graph_from_place()'
 
@@ -45,21 +42,17 @@ class GraphOsm:
         
         G = ox.project_graph(G, to_crs = 'epsg:4326') # set coordinate reference system
         return G
-        
-        
+            
     def deconstruct(self, G):
         intersections, streets = ox.graph_to_gdfs(G) 
-        
         print('Graph representation of road network:')
         print('')
         print('streets: edges '+str(streets.shape))
         print('')
         print('street intersections: nodes '+str(intersections.shape))
         print('')
-        
         return intersections, streets
         
-
     def vis_save_plot(self, G, name, node_size, edge_width):
     # plot and save in png
         fig, ax = ox.plot_graph(G, bgcolor='k', node_size = node_size, 
@@ -68,8 +61,6 @@ class GraphOsm:
         fig.savefig( name + '.png')
         return fig
 
-        
-        
     def vis_save_folium(self, G, name, edge_width ):
     # plot in folium and save in png
         m1 = ox.plot_graph_folium(G, popup_attribute= None, edge_color='blue', 
@@ -82,7 +73,6 @@ class GraphOsm:
     
     def save_geojson(self, G, name):
     # save to GeoJSON
-
         edges = ox.graph_to_gdfs(G, nodes = False, edges = True)
         # set new coordinate reference system in meters
         ECKERT_IV_PROJ4_STRING = "+proj=eck4 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
