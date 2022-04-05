@@ -101,8 +101,6 @@ def main():
 
         G = g.retrieve()
 
-        print(G)
-
         intersections, streets = g.deconstruct(G)
 
         st.session_state.streets = streets
@@ -188,14 +186,14 @@ def main():
         
             g = GraphGCN(streets)
 
-            df_streets = g.prepare_streets_DF()
+            df_streets = g.prepare_streets_dataframe()
 
-            streets_graph, df_graph, H = g.build_graph_DF(df_streets, with_type = un_direct, with_attr = True)
+            streets_graph, df_graph, H = g.build_graph_dataframe(df_streets, with_type = un_direct, with_attr = True)
 
             code = '''# 
-            g = G_forGCN(streets)
-            df_streets = g.prepare_streets_DF()
-            streets_graph, df_graph, H = g.build_graph_DF(df_streets, with_type = un_direct, with_attr = True)'''
+            g = GraphGCN(streets)
+            df_streets = g.prepare_streets_dataframe()
+            streets_graph, df_graph, H = g.build_graph_dataframe(df_streets, with_type = un_direct, with_attr = True)'''
             
             st.code(code, language='python')
 
@@ -209,7 +207,7 @@ def main():
 
             st.header('Visualize graph in Networkx')
 
-            fig = g.viz_save_toNetworkx(H, pos, PATH_  + 'graph_' +  un_direct)
+            fig = g.vis_save_networkx(H, pos, PATH_  + 'graph_' +  un_direct)
 
             st.pyplot(fig)
 
@@ -220,11 +218,11 @@ def main():
             # save html to directory
             PATH_ = PATH_CITY + PATH_HTML
             
-            viz = g.save_toHTML(H, pos, PATH_ + 'graph_' + un_direct)
+            viz = g.save_html(H, pos, PATH_ + 'graph_' + un_direct)
 
             code = '''# 
             pos = nx.get_node_attributes( H, 'pos')
-            g.save_toHTML(H, pos, un_direct)
+            g.save_html(H, pos, un_direct)
             '''
 
             st.code(code, language='python')
@@ -240,5 +238,4 @@ def main():
 
 
 if __name__ == '__main__':
-    
     main()
