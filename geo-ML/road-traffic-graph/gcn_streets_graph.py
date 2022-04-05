@@ -29,17 +29,14 @@ class GraphOsm:
         
     def retrieve(self):
     # retrieve the streets with OSMnx module: 'ox.graph_from_place()'
-
         if  self.drive == 'none':
             if self.area == 'Namur, Belgium' or self.area == 'Mechelen, Belgium':
                 # querying Namur/Mechelen returns two results: point geometry and (multi)polygon
-                
                 G = ox.graph_from_place(self.area, network_type = self.drive, custom_filter = self.query, which_result = 2)
             else:
                 G = ox.graph_from_place(self.area, network_type = self.drive, custom_filter = self.query) 
         else:
             G = ox.graph_from_place(self.area, network_type = self.drive)
-        
         G = ox.project_graph(G, to_crs = 'epsg:4326') # set coordinate reference system
         return G
             
@@ -69,8 +66,6 @@ class GraphOsm:
         m1.save(filepath)
         return  folium_static(m1)
 
-        
-    
     def save_geojson(self, G, name):
     # save to GeoJSON
         edges = ox.graph_to_gdfs(G, nodes = False, edges = True)
@@ -85,7 +80,6 @@ class GraphOsm:
         streets_net.columns = ['geometry']
         streets_net.crs = {'init' :'epsg:4326'}
         streets_net.to_file(name + '.json', driver = 'GeoJSON')
-        
     
     def save_pickle(self, G, intersections, streets, name):       
         with open( str(name) + '.pkl', 'wb') as f:
