@@ -26,6 +26,7 @@ class GraphOsm:
         self.drive = drive   # typology of roads (e.g. drive)
         self.query = query   # roads of interest (e.g. motorways)
         self.buffer = buffer   # width of roads (e.g. 4.5 meters)
+
         
     def retrieve(self):
     # retrieve the streets with OSMnx module: 'ox.graph_from_place()'
@@ -39,7 +40,8 @@ class GraphOsm:
             G = ox.graph_from_place(self.area, network_type = self.drive)
         G = ox.project_graph(G, to_crs = 'epsg:4326') # set coordinate reference system
         return G
-            
+
+
     def deconstruct(self, G):
         intersections, streets = ox.graph_to_gdfs(G) 
         print('Graph representation of road network:')
@@ -49,7 +51,8 @@ class GraphOsm:
         print('street intersections: nodes '+str(intersections.shape))
         print('')
         return intersections, streets
-        
+
+
     def vis_save_plot(self, G, name, node_size, edge_width):
     # plot and save in png
         fig, ax = ox.plot_graph(G, bgcolor='k', node_size = node_size, 
@@ -58,6 +61,7 @@ class GraphOsm:
         fig.savefig( name + '.png')
         return fig
 
+
     def vis_save_folium(self, G, name, edge_width ):
     # plot in folium and save in png
         m1 = ox.plot_graph_folium(G, popup_attribute= None, edge_color='blue', 
@@ -65,6 +69,7 @@ class GraphOsm:
         filepath = name + '_vis_folium.html'
         m1.save(filepath)
         return  folium_static(m1)
+
 
     def save_geojson(self, G, name):
     # save to GeoJSON
@@ -81,6 +86,7 @@ class GraphOsm:
         streets_net.crs = {'init' :'epsg:4326'}
         streets_net.to_file(name + '.json', driver = 'GeoJSON')
     
+
     def save_pickle(self, G, intersections, streets, name):       
         with open( str(name) + '.pkl', 'wb') as f:
             pickle.dump([G, intersections, streets], f)
