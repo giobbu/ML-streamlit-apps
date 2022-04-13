@@ -18,7 +18,10 @@ from sklearn import datasets
 
 st.header('Recursive Least Squares Algorithm')
 st.write('Every 5 seconds a new pair of observation x(i) and label y(i) is acquired by the system. The aim is to update the model with the new information. ')
-st.subheader('$$  y = x \Theta  $$')
+st.write('$$  y = xw  $$')
+st.write('* $$ A = \lambda^{-1}(X^TX)^{-1} $$')
+st.write('* $$ z = A\overline{x} $$')
+st.write('* $$ \phi = (1 + <\overline{x}, z>)^{-1} $$')
 
 TIME_STEP = st.empty()
 
@@ -72,10 +75,10 @@ for i in range(test_size):
     
     step_x.append(i)  # append step 
     
-    obs_x.append(x.item(0))  # append new x
+    obs_x.append(x_.item(0))  # append new x
     obs_y.append(y[i])  # append new y
     
-    NEW_OBS.subheader(f'$$ x $$: {np.round(x.item(0),3)} -- $$ y $$ : {np.round(y[i],3)}')
+    NEW_OBS.subheader(f'$$ x $$: {np.round(x_.item(0),3)} -- $$ y $$ : {np.round(y[i],3)}')
     
     pred_y.append(pred_)
 
@@ -114,7 +117,7 @@ for i in range(test_size):
     df_error = pd.DataFrame({'step':[i], 'error': [error]})
     CHART_ERROR.add_rows(df_error)
 
-    WEIGHTS.subheader(f'$$ \Theta $$ updated: {np.round(rls.w.item(0),3)}')
+    WEIGHTS.subheader(f'$$ w $$ updated: {np.round(rls.w.item(0),3)}')
 
     # update the coefficient with the new observations
     rls.add_obs(x_.T, y[i])
