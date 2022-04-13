@@ -21,6 +21,10 @@ st.write('Every 5 seconds a new pair of observation x(i) and label y(i) is acqui
 st.subheader('$$  y = x \Theta  $$')
 
 TIME_STEP = st.empty()
+
+st.subheader('New Pair')
+NEW_OBS = st.empty()
+
 WEIGHTS = st.empty()
 
 df_regr = pd.DataFrame({ 'obs_x':[], 'obs_y': []})
@@ -63,11 +67,16 @@ for i in range(test_size):
     TIME_STEP.subheader(f'Time : {current_time}')
     
     x_ = np.matrix(x[i])
-    pred_ = float( x_*rls.w )
+    pred_ = float(x_*rls.w)
 
-    step_x.append(i) 
-    obs_x.append(x[i][0])
-    obs_y.append(y[i])
+    
+    step_x.append(i)  # append step 
+    
+    obs_x.append(x.item(0))  # append new x
+    obs_y.append(y[i])  # append new y
+    
+    NEW_OBS.subheader(f'$$ x $$: {np.round(x.item(0),3)} -- $$ y $$ : {np.round(y[i],3)}')
+    
     pred_y.append(pred_)
 
     # define dataframe for df([x, y, pred])
@@ -105,7 +114,7 @@ for i in range(test_size):
     df_error = pd.DataFrame({'step':[i], 'error': [error]})
     CHART_ERROR.add_rows(df_error)
 
-    WEIGHTS.subheader(f'$$ \Theta $$ : {rls.w.tolist()}')
+    WEIGHTS.subheader(f'$$ \Theta $$ updated: {np.round(rls.w.item(0),3)}')
 
     # update the coefficient with the new observations
     rls.add_obs(x_.T, y[i])
