@@ -18,17 +18,25 @@ from sklearn import datasets
 
 st.header('Recursive Least Squares Algorithm')
 st.write('Every 5 seconds a new pair of observation x(i) and label y(i) is acquired by the system. The aim is to update the model with the new information. ')
-st.write('$$  y = xw  $$')
+
+col1, col2, col3 = st.columns(3)
+with col2:
+	st.write('$$  y = xw  $$')
+
+st.write('---')
+st.subheader("The Algorithm")
 st.write('* $$ A = \lambda^{-1}(X^TX)^{-1} $$')
 st.write('* $$ z = A\overline{x} $$')
 st.write('* $$ \phi = (1 + <\overline{x}, z>)^{-1} $$')
+st.write('* $$ w \leftarrow w - \phi<x,w + tz>z +tz$$')
+st.write('* $$ A \leftarrow A - \phi z z^{T}$$')
+st.write('---')
 
 TIME_STEP = st.empty()
-
-st.subheader('New Pair')
-NEW_OBS = st.empty()
-
+NEW_OBS = st.subheader('New Pair: ')
+PHI = st.empty()
 WEIGHTS = st.empty()
+MATRIX = st.empty()
 
 df_regr = pd.DataFrame({ 'obs_x':[], 'obs_y': []})
 dot_regr = alt.Chart(df_regr).mark_circle(size = 100).encode(x = 'obs_x', y = 'obs_y').properties(width=1000, height=200)
@@ -71,15 +79,12 @@ for i in range(test_size):
     
     x_ = np.matrix(x[i])
     pred_ = float(x_*rls.w)
-
-    
-    step_x.append(i)  # append step 
-    
+ 
+    step_x.append(i)  # append step     
     obs_x.append(x_.item(0))  # append new x
     obs_y.append(y[i])  # append new y
     
-    NEW_OBS.subheader(f'$$ x $$: {np.round(x_.item(0),3)} -- $$ y $$ : {np.round(y[i],3)}')
-    
+    NEW_OBS.subheader(f'New Pair : ($$x$$ = {np.round(x_.item(0),3)} , $$y$$ = {np.round(y[i],3)})')
     pred_y.append(pred_)
 
     # define dataframe for df([x, y, pred])
@@ -117,7 +122,9 @@ for i in range(test_size):
     df_error = pd.DataFrame({'step':[i], 'error': [error]})
     CHART_ERROR.add_rows(df_error)
 
-    WEIGHTS.subheader(f'$$ w $$ updated: {np.round(rls.w.item(0),3)}')
+    PHI.write(f'* $$ \phi $$ = {np.round(rls.alpha, 3)}')
+    WEIGHTS.write(f'* $$ w $$ = {np.round(rls.w.item(0), 3)}')
+    MATRIX.write(f'* $$ A $$ = {np.round(rls.A.item(0), 3)}')
 
     # update the coefficient with the new observations
     rls.add_obs(x_.T, y[i])
@@ -125,8 +132,3 @@ for i in range(test_size):
     time.sleep(5)
 
 
-# plot the predicted values against the non-noisy output
-ax = plt.scatter(obs_x, y)
-ax = plt.scatter(obs_x, pred_y)
-ax = plt.plot(step_x, pred_y - y)
-plt.show()

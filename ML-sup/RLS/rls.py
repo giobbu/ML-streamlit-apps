@@ -21,6 +21,8 @@ class RLS:
         self.w = np.matrix(np.zeros(self.num_vars))
         self.w = self.w.reshape(self.w.shape[1],1)
         
+        self.alpha = 0
+
         # Variables needed for add_obs
         self.lam_inv = lam**(-1)
         self.sqrt_lam_inv = math.sqrt(self.lam_inv)
@@ -38,10 +40,10 @@ class RLS:
         t is a real scalar
         '''            
         z = self.lam_inv*self.A*x
-        alpha = float((1 + x.T*z)**(-1))
+        self.alpha = float((1 + x.T*z)**(-1))
         self.a_priori_error = float(t - self.w.T*x)
-        self.w = self.w + (t-alpha*float(x.T*(self.w+t*z)))*z
-        self.A -= alpha*z*z.T
+        self.w = self.w + (t-self.alpha*float(x.T*(self.w+t*z)))*z
+        self.A -= self.alpha*z*z.T
         self.num_obs += 1
         
     def fit(self, X, y):
